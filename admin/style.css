@@ -1,0 +1,105 @@
+/* Custom Multi Select */
+.sd-multiSelect {
+position: relative;
+}
+
+.sd-multiSelect .placeholder {
+opacity: 1;
+background-color: transparent;
+cursor: pointer;
+}
+
+.sd-multiSelect .ms-offscreen {
+height: 1px;
+width: 1px;
+opacity: 0;
+overflow: hidden;
+display: none;
+}
+
+.sd-multiSelect .sd-CustomSelect {
+width: 100% !important;
+}
+
+.sd-multiSelect .ms-choice {
+position: relative;
+text-align: left !important;
+width: 100%;
+border: 1px solid #e3e3e3;
+background: #ffff;
+box-shadow: none;
+font-size: 15px;
+height: 44px;
+font-weight: 500;
+color: #212529;
+line-height: 1.5;
+-webkit-appearance: none;
+-moz-appearance: none;
+appearance: none;
+border-radius: 0.25rem;
+transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.sd-multiSelect .ms-choice:after {
+content: "↓";
+position: absolute;
+right: 10px;
+top: 50%;
+transform: translateY(-50%);
+font-size: 18px;
+}
+
+.sd-multiSelect .ms-choice:focus {
+border-color: var(--theme-color);
+}
+
+.sd-multiSelect .ms-drop.bottom {
+    display: none;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    padding: 10px;
+}
+
+.sd-multiSelect .ms-drop li {
+position: relative;
+margin-bottom: 10px;
+}
+
+.sd-multiSelect .ms-drop li input[type="checkbox"] {
+padding: 0;
+height: initial;
+width: initial;
+margin-bottom: 0;
+display: none;
+cursor: pointer;
+}
+
+.sd-multiSelect .ms-drop li label {
+cursor: pointer;
+user-select: none;
+-ms-user-select: none;
+-moz-user-select: none;
+-webkit-user-select: none;
+}
+
+.sd-multiSelect .ms-drop li label:before {
+content: "";
+-webkit-appearance: none;
+background-color: transparent;
+padding: 8px;
+display: inline-block;
+position: relative;
+vertical-align: middle;
+cursor: pointer;
+margin-right: 5px;
+}
+
+.sd-multiSelect .ms-drop li input:checked + span:after {
+content: "✓";
+display: block;
+position: absolute;
+top: 0px;
+left: 5px;
+width: 10px;
+height: 10px;
+}
