@@ -1,6 +1,4 @@
 <?php
-session_start();
-
 if ($_POST['action'] === 'previous') {
     $date = new DateTime($_POST['date']);
     $date->modify('-1 day');

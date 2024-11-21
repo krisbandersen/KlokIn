@@ -1,6 +1,5 @@
 <?php
 require_once '../../php/utils.php';
-session_start();
 
 if (isset($_POST['csrf_token']) && validateToken($_POST['csrf_token'])) {
     $employeeId = $_SESSION["employeeID"]; // Hent medarbejder ID fra sessionen, eller modtag det via POST

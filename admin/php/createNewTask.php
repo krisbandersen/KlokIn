@@ -33,7 +33,6 @@ if (count($errors) === 0) {
             $startTimeTimestamp = intval($_POST['startTime']) / 1000;
             $endTimeTimestamp = intval($_POST['endTime']) / 1000;
 
-            date_default_timezone_set('Europe/Copenhagen');
             try {
                 $task_id = sqlInsert(
                     $C,

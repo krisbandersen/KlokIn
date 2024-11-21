@@ -127,17 +127,18 @@
       width: 100% !important;
       }
 
+      .ms-drop {
+         background-color: transparent;
+      }
+
       .sd-multiSelect .ms-choice {
       position: relative;
       text-align: left !important;
       width: 100%;
-      border: 1px solid #e3e3e3;
-      background: #ffff;
       box-shadow: none;
       font-size: 15px;
       height: 44px;
       font-weight: 500;
-      color: #212529;
       line-height: 1.5;
       -webkit-appearance: none;
       -moz-appearance: none;
@@ -155,14 +156,8 @@
       font-size: 18px;
       }
 
-      .sd-multiSelect .ms-choice:focus {
-      border-color: var(--theme-color);
-      }
-
       .sd-multiSelect .ms-drop.bottom {
          display: none;
-         background: #fff;
-         border: 1px solid #e5e5e5;
          padding: 10px;
       }
 
@@ -296,8 +291,8 @@
                               </svg>
                            </div>
                            <div>
-                              <div class="text-gray-600 dark:dark:text-slate-200 text-sm">Antal ansatte</div>
-                              <div class="text-gray-900 dark:dark:text-white text-2xl font-semibold">
+                              <div class="text-gray-600 dark:text-slate-200 text-sm">Antal ansatte</div>
+                              <div class="text-gray-900 dark:text-white text-2xl font-semibold">
                                     37
                               </div>
                            </div>
@@ -316,8 +311,8 @@
                               </svg>
                            </div>
                            <div>
-                              <div class="text-gray-600 dark:dark:text-slate-200 text-sm">Aktive ansatte</div>
-                              <div class="text-gray-900 dark:dark:text-white text-2xl font-semibold">
+                              <div class="text-gray-600 dark:text-slate-200 text-sm">Aktive ansatte</div>
+                              <div class="text-gray-900 dark:text-white text-2xl font-semibold">
                                     5
                               </div>
                            </div>
@@ -336,8 +331,8 @@
                               </svg>
                            </div>
                            <div>
-                              <div class="text-gray-600 dark:dark:text-slate-200 text-sm">Gns. timer per dag.</div>
-                              <div class="text-gray-900 dark:dark:text-white text-2xl font-semibold">
+                              <div class="text-gray-600 dark:text-slate-200 text-sm">Gns. timer per dag.</div>
+                              <div class="text-gray-900 dark:text-white text-2xl font-semibold">
                                     6.5
                               </div>
                            </div>
@@ -356,8 +351,8 @@
                               </svg>
                            </div>
                            <div>
-                              <div class="text-gray-600 dark:dark:text-slate-200 text-sm">Antal timer denne måned</div>
-                              <div class="text-gray-900 dark:dark:text-white text-2xl font-semibold">
+                              <div class="text-gray-600 dark:text-slate-200 text-sm">Antal timer denne måned</div>
+                              <div class="text-gray-900 dark:text-white text-2xl font-semibold">
                                     5656
                               </div>
                            </div>
@@ -898,12 +893,12 @@
                                           <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Beskrivelse</label>
                                           <textarea id="taskDescription" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Beskrivelse her... anden etage til højre. Husk at følge proceduren."></textarea></div>
                                     <div>
-                                          <label for="Deadline" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Deadline</label>
+                                          <label for="Deadline" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tidspunkt</label>
                                           <button type="button" data-modal-target="timepicker-modal" data-modal-toggle="timepicker-modal" class="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700">
                                              <svg class="w4 h-4 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                              <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd"/>
                                              </svg>
-                                             Sæt deadline
+                                             Sæt tidspunkt
                                           </button>       
                                     </div>
                                     <div>
@@ -917,8 +912,8 @@
                                     </div>                                    
                                     <div class="col-span-2 sm:col-span-1">
                                        <label for="assignedEmployees" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tildelte ansatte </label>
-                                       <div class="modal-box">
-                                       <div class="sd-multiSelect form-group">
+                                       <div class="modal-box  dark:text-white">
+                                       <div class="sd-multiSelect form-group dark:text-white">
                                           <select multiple id="current-job-role" class="sd-CustomSelect text-sm font-medium text-gray-900 dark:text-white overflow-y-auto">';
                                           usort($employees, function($a, $b) {
                                              return $a['employee_number'] - $b['employee_number'];
@@ -929,7 +924,7 @@
                                           // Foreach loop to populate the table rows
                                           foreach ($employees as $employee) {
                                              $optionID ++;
-                                             echo '<option value="'.$employee['id'].'">' . htmlspecialchars($employee['firstname']) . ' ' . htmlspecialchars($employee['lastname']) . ' - ' . htmlspecialchars($employee['employee_number']) . '</option>';
+                                             echo '<option class="dark:text-white" value="'.$employee['id'].'">' . htmlspecialchars($employee['firstname']) . ' ' . htmlspecialchars($employee['lastname']) . ' - ' . htmlspecialchars($employee['employee_number']) . '</option>';
                                           }
                                           echo '</select>
                                        </div>
@@ -951,7 +946,7 @@
                            <!-- Modal header -->
                            <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
                               <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                 Sæt deadline for opgave
+                                 Sæt tidspunkt for opgave
                               </h3>
                               <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="timepicker-modal">
                                  <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">

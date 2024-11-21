@@ -1,6 +1,5 @@
 <?php
 require_once '../../php/utils.php';
-session_start();
 
 if (isset($_POST['csrf_token']) && validateToken($_POST['csrf_token'])) {
     echo json_encode([
