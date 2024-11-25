@@ -474,6 +474,7 @@ $(document).ready(function() {
 });
 
 let datepickerInstance;
+let selectedDate;
 
 function initializeDatepicker() {
   const datepickerEl = document.getElementById('datepicker');
@@ -481,6 +482,7 @@ function initializeDatepicker() {
   if (datepickerEl && !datepickerInstance) {
     // Get today's date and ensure it's a valid Date object
     const today = new Date();
+    selectedDate = today
 
     // Initialize the datepicker
     datepickerInstance = new Datepicker(datepickerEl, {
@@ -494,14 +496,13 @@ function initializeDatepicker() {
 
     // Listen for changes
     datepickerEl.addEventListener('changeDate', (event) => {
-        const selectedDate = event.detail.date;
-        console.log('Selected Date:', selectedDate); // Debugging/logging
+      selectedDate = event.detail.date;
     });
 }
 }
 
 function getTaskStartTime() {
-  var date = getSelectedDate();
+  var date = selectedDate;
   var deadlineTime = document.getElementById('startTime').value;
 
   var [hours, minutes] = deadlineTime.split(':').map(Number);
@@ -523,7 +524,7 @@ function getTaskStartTime() {
 }
 
 function getTaskEndTime() {
-  var date = getSelectedDate();
+  var date = selectedDate;
   var deadlineTime = document.getElementById('endTime').value;
 
   var [hours, minutes] = deadlineTime.split(':').map(Number);
@@ -543,15 +544,6 @@ function getTaskEndTime() {
   return deadlineDateTime.getTime(); // This will be the timestamp in milliseconds
 }
 
-function getSelectedDate() {
-  if (datepickerInstance && datepickerInstance.selectedDate) {
-    return datepickerInstance.selectedDate;
-  } else {
-    console.warn("Datepicker has no selected date");
-    return undefined;
-  }
-}
-
 window.addEventListener('DOMContentLoaded', initializeDatepicker);
 
 mapIsInitialized = false;
@@ -566,10 +558,14 @@ function createNewTask(event) {
 
   const startTime = getTaskStartTime();
   const endTime = getTaskEndTime();
-  console.log(startTime, endTime)
- 
+
   const assignedEmployeesSelect = document.getElementById('current-job-role');
   const selectedEmployees = Array.from(assignedEmployeesSelect.selectedOptions).map(option => option.value);
+
+  const isRecurring = document.getElementById('recurringSwitch').checked;
+  const recurrenceDays = isRecurring 
+  ? Array.from(document.querySelectorAll('input[name="recurringDays"]:checked')).map(input => input.value)
+  : null;
 
   const formData = new FormData();
   formData.append('title', TaskTitle);
@@ -579,34 +575,11 @@ function createNewTask(event) {
   formData.append('latitude', taskLocation.lat);
   formData.append('longitude', taskLocation.long);
   formData.append('assignedEmployees', JSON.stringify(selectedEmployees)); // Append selected employees as JSON
+  formData.append('isRecurring', isRecurring ? 1 : 0);
+  formData.append('recurrenceDays', JSON.stringify(recurrenceDays));
 
-  taskLocation = null;
   request('php/createNewTask.php', formData, function(response) {
-    const data = JSON.parse(response)[0];
     window.location.reload();
-
-    /*switch(data) {
-      case 0:
-        window.location = '?page=tasks&error=0';
-        break;
-      case 1:
-        window.location = '?page=tasks&error=1';
-        break;
-      case 2:
-        window.location = '?page=tasks&error=2';
-        break;
-      case 3:
-          window.location = '?page=tasks&error=3';
-          break;
-      case 4:
-          window.location = '?page=tasks&error=4';
-          break;
-      case 5:
-          window.location = '?page=tasks&error=5';
-          break;
-      default:
-          window.location = '?page=tasks&error=10';
-    }*/
   });
 }
 
@@ -678,5 +651,20 @@ function intializeMap() {
         }
       }   
     }, 100);
+  }
+}
+
+function toggleWeekdays() {
+  const recurringSwitch = document.getElementById('recurringSwitch');
+  const weekdaySelection = document.getElementById('weekdaySelection');
+
+  if (recurringSwitch.checked) {
+    weekdaySelection.classList.remove('hidden', 'opacity-0');
+    weekdaySelection.classList.add('opacity-100');
+  } else {
+    weekdaySelection.classList.add('opacity-0');
+    setTimeout(() => {
+      weekdaySelection.classList.add('hidden');
+    }, 300); // Matches the transition duration
   }
 }

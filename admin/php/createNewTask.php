@@ -3,7 +3,6 @@ require_once '../../php/utils.php';
 
 $errors = [];
 
-
 // Validate POST data
 if (!isset($_POST['title']) || strlen($_POST['title']) > 255) {
     $errors[] = 1; // Invalid title
@@ -28,38 +27,33 @@ if (count($errors) === 0) {
     $C = connect();
     if ($C) {
         if (isset($_SESSION['organization_id'])) {
-            $org_id = $_SESSION['organization_id'];  
+            $org_id = $_SESSION['organization_id'];
             $startTimeTimestamp = intval($_POST['startTime']) / 1000;
             $endTimeTimestamp = intval($_POST['endTime']) / 1000;
 
+            $isRecurring = isset($_POST['isRecurring']) ? 1 : 0;
+            $recurrenceDays = $isRecurring && isset($_POST['recurrenceDays']) ? json_encode($_POST['recurrenceDays']) : null;
+
             try {
-                $task_id = sqlInsert(
+                $task_id = sqlInsert( 
                     $C,
-                    'INSERT INTO tasks (organization_id, title, description, latitude, longitude, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                    'issssss',
+                    'INSERT INTO tasks 
+                    (organization_id, title, description, latitude, longitude, start_time, end_time, is_recurring, recurrence_days) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    'issssssss',
                     $org_id,
                     $_POST['title'],
                     $_POST['description'],
                     $_POST['latitude'],
                     $_POST['longitude'],
                     date('Y-m-d H:i:s', $startTimeTimestamp),
-                    date('Y-m-d H:i:s', $endTimeTimestamp)
+                    date('Y-m-d H:i:s', $endTimeTimestamp),
+                    $isRecurring,
+                    $recurrenceDays
                 );
 
                 if ($task_id === -1) { // Check if insertion failed
                     throw new Exception('Error during task creation');
-                }
-
-                // Assign employees to task if provided
-                if (isset($_POST['assignedEmployees'])) {
-                    $assignedEmployees = json_decode($_POST['assignedEmployees'], true); // Convert JSON to array
-
-                    if (!empty($assignedEmployees)) {
-                        foreach ($assignedEmployees as $employee_id) {
-                            sqlInsert($C, 'INSERT INTO task_assigned_employees (task_id, employee_id, assigned_at) VALUES (?, ?, NOW())', 
-                                       'ii', $task_id, $employee_id);
-                        }
-                    }
                 }
 
                 $errors[] = 0; // success
@@ -76,4 +70,4 @@ if (count($errors) === 0) {
     }
 }
 
-echo json_encode( value: $errors);
+echo json_encode($errors);
