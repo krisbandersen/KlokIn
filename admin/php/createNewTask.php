@@ -1,7 +1,6 @@
 <?php
 require_once '../../php/utils.php';
 
-session_start(); // Ensure session is started to access logged-in user data
 $errors = [];
 
 

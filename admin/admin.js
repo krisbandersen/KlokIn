@@ -478,16 +478,26 @@ let datepickerInstance;
 function initializeDatepicker() {
   const datepickerEl = document.getElementById('datepicker');
 
-  if (!datepickerInstance && datepickerEl) {
+  if (datepickerEl && !datepickerInstance) {
+    // Get today's date and ensure it's a valid Date object
+    const today = new Date();
+
+    // Initialize the datepicker
     datepickerInstance = new Datepicker(datepickerEl, {
-      autoselect: true
+        autoselect: true, // Automatically select a date
+        defaultViewDate: today, // Ensures today's date is shown in the view
+        inline: true // Display inline
     });
 
+    // Manually set the default date
+    datepickerInstance.setDate(today);
+
+    // Listen for changes
     datepickerEl.addEventListener('changeDate', (event) => {
-      const selectedDate = event.detail.date;
-      datepickerInstance.selectedDate = selectedDate; 
+        const selectedDate = event.detail.date;
+        console.log('Selected Date:', selectedDate); // Debugging/logging
     });
-  }
+}
 }
 
 function getTaskStartTime() {
@@ -547,7 +557,6 @@ window.addEventListener('DOMContentLoaded', initializeDatepicker);
 mapIsInitialized = false;
 taskLocation = null;
 
-// Admin create employee
 function createNewTask(event) {
   event.preventDefault();
 
@@ -574,7 +583,7 @@ function createNewTask(event) {
   taskLocation = null;
   request('php/createNewTask.php', formData, function(response) {
     const data = JSON.parse(response)[0];
-    console.log(data)
+    window.location.reload();
 
     /*switch(data) {
       case 0:

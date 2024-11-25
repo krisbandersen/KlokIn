@@ -101,12 +101,13 @@
 <!DOCTYPE html>
 <html lang='en'>
 <head>
+    <meta name="csrf_token" content="<?php echo createToken(); ?>" />
+
     <meta charset='UTF-8'>
-	<meta name="csrf_token" content="<?php echo createToken(); ?>" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+    <meta name="description" content="KlokIn IOS app">
     <meta name='viewport' content='width=device-width, initial-scale=1.0, viewport-fit=cover'>
     <title>KlokIn</title>
-    <link rel='manifest' href='/site.webmanifest'>
-    <base href="/app/">
     <link rel="canonical" href="http://localhost/app/">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -139,32 +140,18 @@
     <script src="https://unpkg.com/leaflet-rotatedmarker/leaflet.rotatedMarker.js"></script>
 
      
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- IOS Meta Tags & shit -->
+    <link rel='manifest' href='/site.webmanifest'>
+    <base href="/app/">
+
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="KlokIn">
+    
 
     <link rel="icon" type="image/png" sizes="196x196" href="favicon-196.png">
     <link rel="apple-touch-icon" href="apple-icon-180.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="apple-touch-startup-image" href="apple-splash-1668-2388.jpg" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="apple-splash-1536-2048.jpg" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="apple-splash-1488-2266.jpg" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="apple-splash-1640-2360.jpg" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="apple-splash-1668-2224.jpg" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="apple-splash-1620-2160.jpg" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="apple-splash-1290-2796.jpg" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="apple-splash-1179-2556.jpg" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="apple-splash-1284-2778.jpg" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="apple-splash-1170-2532.jpg" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="apple-splash-1125-2436.jpg" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="apple-splash-1242-2688.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="apple-splash-828-1792.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="apple-splash-1792-828.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="apple-splash-1242-2208.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="apple-splash-750-1334.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="apple-splash-1334-750.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="apple-splash-640-1136.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="apple-splash-1136-640.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
 </head>
 <body class="dark:bg-gray-900">
     <div class="overflow-auto h-[95vh] flex flex-col justify-between px-4 py-6">  
@@ -182,13 +169,44 @@
                         header("Location: index.php?page=today&date=".$postDateGet);
                     }
 
-                    $date = new DateTimeImmutable(datetime: $postDateGet);
+                    $date = new DateTimeImmutable($postDateGet);
 
                     $userTasksJson = getUserTaskByDate($date->format("Y-m-d"));
                     $userTasksData = json_decode($userTasksJson, true);
 
+                    // Get the numeric representation of the day (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+                    $dayOfWeekNum = $date->format('w');
+
+                    // Map the numeric day of the week to its Danish equivalent
+                    switch ($dayOfWeekNum) {
+                        case 0:
+                            $dayOfTheWeek = "søndag"; // Sunday
+                            break;
+                        case 1:
+                            $dayOfTheWeek = "mandag"; // Monday
+                            break;
+                        case 2:
+                            $dayOfTheWeek = "tirsdag"; // Tuesday
+                            break;
+                        case 3:
+                            $dayOfTheWeek = "onsdag"; // Wednesday
+                            break;
+                        case 4:
+                            $dayOfTheWeek = "torsdag"; // Thursday
+                            break;
+                        case 5:
+                            $dayOfTheWeek = "fredag"; // Friday
+                            break;
+                        case 6:
+                            $dayOfTheWeek = "lørdag"; // Saturday
+                            break;
+                        default:
+                            $dayOfTheWeek = ""; // In case something goes wrong (though it shouldn't)
+                            break;
+                    }
+
                     echo '
-                        <h1 class="text-3xl font-semibold text-gray-900 dark:text-white mt-4 mb-4 text-center">Ugedag d. '.htmlspecialchars(date("d-m-Y", strtotime($date->format('Y-m-d')))).' <br> Uge '.htmlspecialchars(date("W", strtotime($date->format('Y-m-d')))).'</h1>
+                        <h1 class="text-3xl font-semibold text-gray-900 dark:text-white mt-4 mb-4 text-center">'.ucfirst($dayOfTheWeek).' d. '.htmlspecialchars(date("d-m-Y", strtotime($date->format('Y-m-d')))).' <br> Uge '.htmlspecialchars(date("W", strtotime($date->format('Y-m-d')))).'</h1>
                             <div class="cards mb-24">';
                                 if ($userTasksData === null && json_last_error() !== JSON_ERROR_NONE) {
                                     echo "Error decoding JSON: " . json_last_error_msg();
@@ -238,7 +256,7 @@
                                                         </div> 
                                                     </div>                                           
                                                     <div class="p-6 pt-3">
-                                                        <button data-modal-target="timepicker-modal" data-modal-toggle="timepicker-modal"
+                                                        <button onclick="setHighlightedTask('.htmlspecialchars($task["id"]).');" data-modal-target="timepicker-modal" data-modal-toggle="timepicker-modal"
                                                             class="block w-full select-none rounded-lg bg-gray-900 py-3.5 px-7 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                                             type="button">
                                                             Start opgave
@@ -247,11 +265,15 @@
                                                 </div>
                                             </div>';
                                         } else {
-                                            echo '                            
+                                            echo '
                                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                                <div class="bg-gray-200 dark:bg-gray-400 shadow-md rounded-lg p-6">
-                                                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">'.htmlspecialchars($task["title"]).'</h2>
-                                                    <p class="text-gray-600 dark:text-gray-400 mb-4">'.htmlspecialchars($task["description"]).'</p>
+                                                <div id="' . $task["id"] . '" class="bg-white shadow-2xl rounded-lg p-6 dark:bg-gray-800 relative ' . ($task["end_time"] ? 'opacity-50 pointer-events-none' : '') . '">
+                                                    
+                                                    <!-- Overlay for completed tasks -->
+                                                    ' . ($task["end_time"] ? '<div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-2xl font-bold">Færdiggjort</div>' : '') . '
+                                                    
+                                                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2 ' . ($task["end_time"] ? 'line-through text-gray-500' : '') . '">' . htmlspecialchars($task["title"]) . '</h2>
+                                                    <p class="text-gray-600 dark:text-gray-400 mb-4 ' . ($task["end_time"] ? 'line-through text-gray-500' : '') . '">' . htmlspecialchars($task["description"]) . '</p>
                                                     <hr class="h-px my-8 bg-gray-400 dark:bg-gray-700 border-1">
                                                     
                                                     <div class="py-4">
@@ -260,36 +282,36 @@
                                                                 <h5 class="block font-sans text-xl antialiased font-medium leading-snug tracking-normal text-gray-900 dark:text-white">
                                                                     Starttidspunkt
                                                                 </h5>
-                                                                <p class="text-gray-900 dark:text-white">'.htmlspecialchars(date('H:i', timestamp: strtotime($task["start_time"]))).'</p>
-                                                                <p class="text-gray-900 dark:text-white mb-4">'.htmlspecialchars(date('d-m-Y', timestamp: strtotime($task["start_time"]))).'</p>
-                                                                <div class="inline-flex flex-wrap items-center gap-3 group">
+                                                                <p class="text-gray-900 dark:text-white">' . htmlspecialchars(date('H:i', strtotime($task["start_time"]))) . '</p>
+                                                                <p class="text-gray-900 dark:text-white mb-4">' . htmlspecialchars(date('d-m-Y', strtotime($task["start_time"]))) . '</p>
                                                             </div>
                                                             <div>
                                                                 <h5 class="block font-sans text-xl antialiased font-medium leading-snug tracking-normal text-gray-900 dark:text-white">
                                                                     Sluttidspunkt
                                                                 </h5>
-                                                                <p class="text-gray-900 dark:text-white">'.htmlspecialchars(date('H:i', timestamp: strtotime($task["end_time"]))).'</p>
-                                                                <p class="text-gray-900 dark:text-white mb-4">'.htmlspecialchars(date('d-m-Y', strtotime($task["end_time"]))).'</p>
-                                                                <div class="inline-flex flex-wrap items-center gap-3 group"></div>
+                                                                <p class="text-gray-900 dark:text-white">' . htmlspecialchars(date('H:i', strtotime($task["end_time"]))) . '</p>
+                                                                <p class="text-gray-900 dark:text-white mb-4">' . htmlspecialchars(date('d-m-Y', strtotime($task["end_time"]))) . '</p>
                                                             </div>
                                                             <div>
                                                                 <h5 class="block font-sans text-xl antialiased font-medium leading-snug tracking-normal text-gray-900 dark:text-white">
                                                                     Samlet arbejdstid
                                                                 </h5>
-                                                                <p class="text-gray-900 dark:text-white">'.htmlspecialchars(calculateDuration($task["start_time"], $task["end_time"])).'</p>
-                                                                <div class="inline-flex flex-wrap items-center gap-3 group"></div>
+                                                                <p class="text-gray-900 dark:text-white">' . htmlspecialchars(calculateDuration($task["start_time"], $task["end_time"])) . '</p>
                                                             </div>
                                                         </div> 
-                                                    </div>                                           
-                                                </div>
+                                                </div>';
+                                        
+                                                // Check if task is completed (end_time is not null)
+                                                $isTaskCompleted = !empty($task["end_time"]);
+                                        
+                                                // If task is completed, disable the "Start opgave" button
+                                                echo '
                                                 <div class="p-6 pt-3">
-                                                    <button data-modal-target="timepicker-modal" data-modal-toggle="timepicker-modal"
-                                                        class="block w-full select-none rounded-lg bg-gray-400 py-3.5 px-7 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                                                        type="button">
+                                                    <button ' . ($isTaskCompleted ? 'disabled' : '') . ' class="block w-full select-none rounded-lg bg-gray-800 py-3.5 px-7 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none ' . ($isTaskCompleted ? 'opacity-50 pointer-events-none' : '') . '" type="button">
                                                         Start opgave
                                                     </button>
-                                                </div>                               
-                                               ';
+                                                </div>
+                                            </div>';                                                         
                                         }
                                     } 
                             } 
@@ -375,7 +397,7 @@
                 </div>
                 <!-- Modal body -->
                 <div class="p-4 pt-0">
-                    <div id="datepicker" inline-datepicker datepicker-autoselect-today class="mx-auto sm:mx-0 flex justify-center my-5"></div>
+                    <div id="datepicker" class="mx-auto sm:mx-0 flex justify-center my-5"></div>
                     <label class="text-sm font-medium text-gray-900 dark:text-white mb-2 block">
                     Starttidspunkt
                     </label>
@@ -390,7 +412,7 @@
                     </div>
 
                     <div class="grid grid-cols-2 gap-2">
-                        <button type="button" data-modal-hide="timepicker-modal" onclick="getSelectedDate()" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Gem</button>
+                        <button type="button" data-modal-hide="timepicker-modal" onclick="startTask();" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Start</button>
                         <button type="button" data-modal-hide="timepicker-modal" class="py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Fortryd</button>
                     </div>
                 </div>

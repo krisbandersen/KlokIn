@@ -5,6 +5,9 @@
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
+  "description": "KlokIn app.",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "manifest-icon-192.maskable.png",

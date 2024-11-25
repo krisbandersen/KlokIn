@@ -957,7 +957,7 @@
                            </div>
                            <!-- Modal body -->
                            <div class="p-4 pt-0">
-                              <div id="datepicker" inline-datepicker datepicker-autoselect-today class="mx-auto sm:mx-0 flex justify-center my-5"></div>
+                              <div id="datepicker" class="mx-auto sm:mx-0 flex justify-center my-5"></div>
                               <label class="text-sm font-medium text-gray-900 dark:text-white mb-2 block">
                               Starttidspunkt
                               </label>
