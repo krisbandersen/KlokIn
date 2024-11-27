@@ -567,6 +567,8 @@ function createNewTask(event) {
   ? Array.from(document.querySelectorAll('input[name="recurringDays"]:checked')).map(input => input.value)
   : null;
 
+  const kilometers = document.getElementById('kilometers').value;
+
   const formData = new FormData();
   formData.append('title', TaskTitle);
   formData.append('description', TaskDescription);
@@ -577,6 +579,7 @@ function createNewTask(event) {
   formData.append('assignedEmployees', JSON.stringify(selectedEmployees)); // Append selected employees as JSON
   formData.append('isRecurring', isRecurring ? 1 : 0);
   formData.append('recurrenceDays', JSON.stringify(recurrenceDays));
+  formData.append('kilometers', kilometers);
 
   request('php/createNewTask.php', formData, function(response) {
     window.location.reload();
@@ -668,3 +671,37 @@ function toggleWeekdays() {
     }, 300); // Matches the transition duration
   }
 }
+
+function approveTasks(employeeId, event) {
+  // Collect selected task IDs for the specific employee
+  const selectedTasks = Array.from(
+    document.querySelectorAll(`input[type="checkbox"][data-employee-id="${employeeId}"]:checked`)
+  ).map(checkbox => checkbox.dataset.taskId);
+
+  if (selectedTasks.length === 0) {
+    alert('No tasks selected for approval.');
+    return;
+  }
+
+  // Prepare form data
+  const formData = new FormData();
+  formData.append('employeeId', employeeId);
+  formData.append('tasks', JSON.stringify(selectedTasks));  // Ensure the key is 'tasks'
+
+  console.log(JSON.stringify(selectedTasks))
+
+  // Send request to PHP
+  request('php/approveTasks.php', formData, function(response) {
+    const result = JSON.parse(response);
+
+    if (result.success) {
+      alert(result.message);  // Show success message
+      window.location.reload();  // Reload the page to reflect the changes
+    } else {
+      // Handle errors
+      alert("Error: " + result.errors.join(", "));
+    }
+  });
+}
+
+

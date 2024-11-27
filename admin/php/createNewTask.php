@@ -3,6 +3,11 @@ require_once '../../php/utils.php';
 
 $errors = [];
 
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] !== true) {
+    header("Location: /login.php");
+    exit;
+}
+
 // Validate POST data
 if (!isset($_POST['title']) || strlen($_POST['title']) > 255) {
     $errors[] = 1; // Invalid title
@@ -38,9 +43,9 @@ if (count($errors) === 0) {
                 $task_id = sqlInsert( 
                     $C,
                     'INSERT INTO tasks 
-                    (organization_id, title, description, latitude, longitude, start_time, end_time, is_recurring, recurrence_days) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                    'issssssss',
+                    (organization_id, title, description, latitude, longitude, start_time, end_time, is_recurring, recurrence_days, kilometers) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    'isssssssss',
                     $org_id,
                     $_POST['title'],
                     $_POST['description'],
@@ -49,12 +54,25 @@ if (count($errors) === 0) {
                     date('Y-m-d H:i:s', $startTimeTimestamp),
                     date('Y-m-d H:i:s', $endTimeTimestamp),
                     $isRecurring,
-                    $recurrenceDays
+                    $recurrenceDays,
+                    $_POST['kilometers']
                 );
 
                 if ($task_id === -1) { // Check if insertion failed
                     throw new Exception('Error during task creation');
                 }
+
+                // Assign employees to task if provided
+                if (isset($_POST['assignedEmployees'])) {
+                    $assignedEmployees = json_decode($_POST['assignedEmployees'], true); // Convert JSON to array
+
+                    if (!empty($assignedEmployees)) {
+                        foreach ($assignedEmployees as $employee_id) {
+                            sqlInsert($C, 'INSERT INTO task_assigned_employees (task_id, employee_id, assigned_at) VALUES (?, ?, NOW())', 
+                                       'ii', $task_id, $employee_id);
+                        }
+                    }
+                }                
 
                 $errors[] = 0; // success
 

@@ -1,8 +1,12 @@
 <?php
 require_once '../../php/sendValidationEmail.php';
 
-session_start(); // Ensure session is started to access logged-in user data
 $errors = [];
+
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] !== true) {
+  header("Location: /login.php");
+  exit;
+}
 
 // Validate POST data
 if (!isset($_POST['firstname']) || strlen($_POST['firstname']) > 255 || !preg_match('/^[a-zA-ZÆØÅæøå -]+$/', $_POST['firstname'])) {

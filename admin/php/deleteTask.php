@@ -4,6 +4,11 @@ require_once '../../php/utils.php';
 session_start();
 $errors = [];
 
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] !== true) {
+    header("Location: /login.php");
+    exit;
+}
+
 // Validate POST data
 if (!isset($_POST['id'])) {
     $errors[] = 1; // no id

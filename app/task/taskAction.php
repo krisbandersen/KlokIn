@@ -76,7 +76,7 @@ switch ($action) {
         $updateTask = sqlUpdate(
             $C,
             "UPDATE tasks 
-            SET completed = 1, end_time = NOW() 
+            SET completed = 1 
             WHERE id = ?",
             'i',
             $_SESSION['task_id']
